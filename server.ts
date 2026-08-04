@@ -34,7 +34,9 @@ const DEFAULT_CONFIG = {
   rates: {
     transferCUP: 85.50,
     cashCUP: 84.00,
-    cashUSD: 0.25
+    cashUSD: 0.25,
+    penToUsd: 0.26,
+    usdCashFee: 5
   },
   deliveryMethods: {
     transferCUP: true,
@@ -94,7 +96,15 @@ async function getConfig() {
     try {
       const { data, error } = await supabase.from('app_config').select('data').eq('id', 1).single();
       if (data && data.data) {
-        return { ...DEFAULT_CONFIG, ...data.data, adminPassword: data.data.adminPassword || DEFAULT_CONFIG.adminPassword };
+        return { 
+          ...DEFAULT_CONFIG, 
+          ...data.data, 
+          rates: { ...DEFAULT_CONFIG.rates, ...(data.data.rates || {}) },
+          socials: { ...DEFAULT_CONFIG.socials, ...(data.data.socials || {}) },
+          deliveryMethods: { ...DEFAULT_CONFIG.deliveryMethods, ...(data.data.deliveryMethods || {}) },
+          heroText: { ...DEFAULT_CONFIG.heroText, ...(data.data.heroText || {}) },
+          adminPassword: data.data.adminPassword || DEFAULT_CONFIG.adminPassword 
+        };
       }
     } catch (e) {
       console.error('Error fetching config from Supabase', e);
@@ -104,7 +114,15 @@ async function getConfig() {
   try {
     const data = await fs.readFile(CONFIG_FILE, 'utf-8');
     const parsedData = JSON.parse(data);
-    return { ...DEFAULT_CONFIG, ...parsedData, adminPassword: parsedData.adminPassword || DEFAULT_CONFIG.adminPassword };
+    return { 
+      ...DEFAULT_CONFIG, 
+      ...parsedData, 
+      rates: { ...DEFAULT_CONFIG.rates, ...(parsedData.rates || {}) },
+      socials: { ...DEFAULT_CONFIG.socials, ...(parsedData.socials || {}) },
+      deliveryMethods: { ...DEFAULT_CONFIG.deliveryMethods, ...(parsedData.deliveryMethods || {}) },
+      heroText: { ...DEFAULT_CONFIG.heroText, ...(parsedData.heroText || {}) },
+      adminPassword: parsedData.adminPassword || DEFAULT_CONFIG.adminPassword 
+    };
   } catch (error) {
     await fs.writeFile(CONFIG_FILE, JSON.stringify(DEFAULT_CONFIG, null, 2));
     return DEFAULT_CONFIG;
@@ -134,6 +152,10 @@ async function saveConfig(newConfig: any, token?: string) {
 }
 
 // API Routes
+app.get('/api/ping', (req, res) => {
+  res.status(200).send('pong');
+});
+
 app.get('/api/config', async (req, res) => {
   const config = await getConfig();
   // Don't send password to client
@@ -154,11 +176,13 @@ app.post('/api/login', async (req, res) => {
 app.put('/api/config', async (req, res) => {
   const { token, configUpdates, newPassword } = req.body;
   
+  const adminEmails = ['clalexremesa@gmail.com', 'cristianmarco2003@gmail.com'];
+
   let authorized = false;
   if (supabase) {
     try {
       const { data: { user }, error } = await supabase.auth.getUser(token);
-      if (user && user.email === 'clalexremesa@gmail.com') {
+      if (user && user.email && adminEmails.includes(user.email)) {
         authorized = true;
       }
     } catch (e) {

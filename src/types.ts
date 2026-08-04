@@ -25,6 +25,8 @@ export interface AppConfig {
     transferCUP: number;
     cashCUP: number;
     cashUSD: number;
+    penToUsd?: number;
+    usdCashFee?: number;
   };
   deliveryMethods: {
     transferCUP: boolean;

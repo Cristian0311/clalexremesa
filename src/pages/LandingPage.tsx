@@ -23,16 +23,42 @@ import {
 } from 'lucide-react';
 import Calculator from '../components/Calculator';
 import { AppConfig } from '../types';
+import { supabase } from '../lib/supabase';
+import { Link } from 'react-router-dom';
 
 export default function LandingPage() {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     fetch('/api/config')
       .then(res => res.json())
       .then(data => setConfig(data))
       .catch(console.error);
+      
+    // Check if user is an admin via Supabase
+    if (supabase) {
+      const adminEmails = ['clalexremesa@gmail.com', 'cristianmarco2003@gmail.com'];
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user?.email && adminEmails.includes(session.user.email)) {
+           setIsAdmin(true);
+        }
+      });
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user?.email && adminEmails.includes(session.user.email)) {
+           setIsAdmin(true);
+        } else {
+           setIsAdmin(false);
+        }
+      });
+
+      return () => subscription.unsubscribe();
+    } else {
+      const token = localStorage.getItem('adminToken');
+      if (token) setIsAdmin(true);
+    }
   }, []);
 
   const fadeIn = {
@@ -76,14 +102,15 @@ export default function LandingPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-[1.2] py-2">
               {config?.heroText?.title.split(' ').map((word, i, arr) => (
                 <span key={i}>
-                  {i === arr.length - 2 || i === arr.length - 1 ? (
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">{word} </span>
+                  {i >= arr.length - 2 ? (
+                    <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 pb-1">{word}</span>
                   ) : (
-                    <>{word} </>
+                    word
                   )}
+                  {i !== arr.length - 1 ? ' ' : ''}
                 </span>
               ))}
             </h1>
@@ -98,6 +125,11 @@ export default function LandingPage() {
               <a href="#how-it-works" className="text-slate-300 hover:text-white transition-colors flex items-center justify-center gap-2 font-medium px-6 py-3 border border-slate-700 rounded-xl hover:bg-slate-800">
                 Conoce cómo funciona <ChevronDown size={20} />
               </a>
+              {isAdmin && (
+                <Link to="/admin/dashboard" className="bg-amber-500 hover:bg-amber-400 text-slate-900 transition-colors flex items-center justify-center gap-2 font-bold px-6 py-3 rounded-xl shadow-lg shadow-amber-500/20">
+                  Panel Administrativo <ShieldCheck size={20} />
+                </Link>
+              )}
             </div>
             
             <div className="mt-12 flex flex-wrap items-center justify-center lg:justify-start gap-6 lg:gap-10">

@@ -120,6 +120,19 @@ export default function Calculator() {
 
   const getActiveRate = () => {
     if (!config || !selectedMethod) return 0;
+    if (selectedMethod === 'cashUSD') {
+      const baseRate = config.rates.penToUsd ?? config.rates.cashUSD ?? 0.25;
+      const fee = config.rates.usdCashFee ?? 5;
+      return baseRate * (1 - fee / 100);
+    }
+    return config.rates[selectedMethod];
+  };
+
+  const getBaseRate = () => {
+    if (!config || !selectedMethod) return 0;
+    if (selectedMethod === 'cashUSD') {
+      return config.rates.penToUsd ?? config.rates.cashUSD ?? 0.25;
+    }
     return config.rates[selectedMethod];
   };
 
@@ -165,7 +178,7 @@ ${selectedMethod === 'transferCUP' ? `- Tarjeta: ${receiverData.card}` : ''}
 *Remesa:*
 - Monto enviado: S/ ${penAmount} PEN
 - Método: ${getMethodName()}
-- Tasa aplicada: S/ 1 = $${getActiveRate()} ${getCurrency()}
+${selectedMethod === 'cashUSD' ? `- Tasa base: S/ 1 = $${getBaseRate()} USD\n- Comisión Efectivo: ${config.rates.usdCashFee ?? 5}%\n- Tasa efectiva aplicada: S/ 1 = $${getActiveRate()} USD` : `- Tasa de cambio: S/ 1 = $${getActiveRate()} ${getCurrency()}`}
 - A recibir: $${receiveAmount} ${getCurrency()}
 
 *Observaciones:*
@@ -255,7 +268,7 @@ ${observations || 'Ninguna'}`;
         {step === 1 && (
           <div className="text-right">
             <p className="text-[0.6rem] text-slate-400 font-bold uppercase tracking-wider mb-0.5">1 PEN =</p>
-            <p className="text-lg font-black text-blue-400 tracking-tight">${getActiveRate()} <span className="text-[10px] text-white font-medium">{getCurrency()}</span></p>
+            <p className="text-lg font-black text-blue-400 tracking-tight">${selectedMethod === 'cashUSD' ? getBaseRate() : getActiveRate()} <span className="text-[10px] text-white font-medium">{getCurrency()}</span></p>
           </div>
         )}
       </div>
@@ -283,7 +296,7 @@ ${observations || 'Ninguna'}`;
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider">Método de entrega</label>
+                  <label className="block text-[9px] font-bold text-slate-500 uppercase tracking-wider">Método de entrega en Cuba</label>
                   <HelpBubble title="Métodos" description="Selecciona cómo deseas que el dinero sea entregado en Cuba (Transferencia o Efectivo)." />
                 </div>
                 <div className="grid grid-cols-3 gap-1.5">
@@ -317,6 +330,38 @@ ${observations || 'Ninguna'}`;
                     </button>
                   )}
                 </div>
+                {selectedMethod === 'cashUSD' && typeof penAmount === 'number' && penAmount > 0 && (
+                  <div className="bg-slate-50 rounded-xl border border-slate-200 mt-2 flex flex-col overflow-hidden shadow-sm">
+                    <div className="px-3 py-2 bg-slate-100/80 border-b border-slate-200 flex items-center gap-1.5">
+                      <Banknote size={12} className="text-slate-500" />
+                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">Desglose de Efectivo</span>
+                    </div>
+                    <div className="px-3 py-2.5 space-y-2 text-[10px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-500 font-medium">Monto inicial</span>
+                        <span className="font-bold text-slate-700">S/ {penAmount}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-slate-500 font-medium">Conversión (S/1 = ${getBaseRate()})</span>
+                        <span className="font-bold text-slate-700">${(penAmount * getBaseRate()).toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-red-500">
+                        <span className="font-medium">Comisión ({config.rates.usdCashFee ?? 5}%)</span>
+                        <span className="font-bold">- ${((penAmount * getBaseRate()) - Number(receiveAmount)).toFixed(2)}</span>
+                      </div>
+                    </div>
+                    <div className="px-3 py-2 bg-blue-50/80 border-t border-blue-100 flex justify-between items-center">
+                      <span className="text-[9px] font-black uppercase tracking-widest text-blue-900">Total a recibir</span>
+                      <span className="text-xs font-black text-blue-700">${receiveAmount} USD</span>
+                    </div>
+                  </div>
+                )}
+                {selectedMethod === 'cashUSD' && (!penAmount || penAmount <= 0) && (
+                  <div className="bg-slate-50 text-slate-600 text-[9px] p-2.5 rounded-lg border border-slate-200 font-medium flex items-center gap-2 mt-2">
+                    <Info size={14} className="text-slate-400 flex-shrink-0" />
+                    <span>Se aplicará una comisión del {config.rates.usdCashFee ?? 5}% al total de USD convertido.</span>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-3 pt-1">

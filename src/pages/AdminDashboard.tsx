@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, Save, Settings, AlertCircle, Building, Calculator, Truck, HelpCircle, Lock, Plus, Trash2, LayoutTemplate, Wallet, Banknote, DollarSign } from 'lucide-react';
 import { AppConfig, FAQ, Benefit } from '../types';
+import { supabase } from '../lib/supabase';
 
 export default function AdminDashboard() {
   const [config, setConfig] = useState<AppConfig | null>(null);
@@ -13,26 +14,45 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-      navigate('/admin');
-      return;
-    }
+    const adminEmails = ['clalexremesa@gmail.com', 'cristianmarco2003@gmail.com'];
+    
+    const checkAuth = async () => {
+      let token = localStorage.getItem('adminToken');
+      
+      // If we don't have a token, check if we're authenticated via Supabase OAuth
+      if (!token && supabase) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && session.user.email && adminEmails.includes(session.user.email)) {
+          token = session.access_token;
+          localStorage.setItem('adminToken', token);
+        }
+      }
 
-    fetch('/api/config')
-      .then(res => res.json())
-      .then(data => {
-        setConfig(data);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setIsLoading(false);
-      });
+      if (!token) {
+        navigate('/admin');
+        return;
+      }
+
+      fetch('/api/config')
+        .then(res => res.json())
+        .then(data => {
+          setConfig(data);
+          setIsLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setIsLoading(false);
+        });
+    };
+    
+    checkAuth();
   }, [navigate]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('adminToken');
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
     navigate('/admin');
   };
 
@@ -376,7 +396,7 @@ export default function AdminDashboard() {
                   {[
                     { label: 'Transferencia Bancaria (CUP)', key: 'transferCUP' as const, color: 'blue' },
                     { label: 'Efectivo en Cuba (CUP)', key: 'cashCUP' as const, color: 'emerald' },
-                    { label: 'Efectivo en Cuba (USD)', key: 'cashUSD' as const, color: 'amber' }
+                    { label: 'Tasa base 1 SOL a USD', key: 'penToUsd' as const, color: 'amber' }
                   ].map((rate) => (
                     <div key={rate.key} className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
@@ -388,7 +408,7 @@ export default function AdminDashboard() {
                         <input
                           type="number"
                           step="0.01"
-                          value={config.rates[rate.key]}
+                          value={config.rates[rate.key] ?? 0}
                           onChange={(e) => setConfig({ ...config, rates: { ...config.rates, [rate.key]: Number(e.target.value) } })}
                           className="w-20 text-lg font-black text-slate-900 outline-none bg-transparent"
                         />
@@ -397,11 +417,31 @@ export default function AdminDashboard() {
                           rate.color === 'emerald' ? 'bg-emerald-100 text-emerald-700' : 
                           'bg-amber-100 text-amber-700'
                         }`}>
-                          {rate.key.includes('USD') ? 'USD' : 'CUP'}
+                          {rate.key.includes('Usd') || rate.key.includes('USD') ? 'USD' : 'CUP'}
                         </span>
                       </div>
                     </div>
                   ))}
+
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4">
+                    <div>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Comisión Efectivo USD (%)</p>
+                      <p className="text-[10px] font-medium text-slate-400">Se resta al monto en USD enviado por efectivo</p>
+                    </div>
+                    <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+                      <span className="text-xs font-bold text-slate-400">Comisión =</span>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={config.rates.usdCashFee ?? 5}
+                        onChange={(e) => setConfig({ ...config, rates: { ...config.rates, usdCashFee: Number(e.target.value) } })}
+                        className="w-20 text-lg font-black text-slate-900 outline-none bg-transparent"
+                      />
+                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded uppercase bg-red-100 text-red-700">
+                        %
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
