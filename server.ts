@@ -139,8 +139,10 @@ async function saveConfig(newConfig: any, token?: string) {
   
   if (supabase) {
     try {
-      const options = token ? { global: { headers: { Authorization: `Bearer ${token}` } } } : {};
-      const scopedSupabase = token ? createClient(supabaseUrl, supabaseKey, options) : supabase;
+      // Only pass token to Supabase if it's a real JWT, not the static admin token
+      const isJwtToken = token && token !== 'admin-token-secret-123';
+      const options = isJwtToken ? { global: { headers: { Authorization: `Bearer ${token}` } } } : {};
+      const scopedSupabase = isJwtToken ? createClient(supabaseUrl!, supabaseKey!, options) : supabase;
       
       const { error } = await scopedSupabase
         .from('app_config')
