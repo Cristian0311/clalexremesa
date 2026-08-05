@@ -29,7 +29,7 @@ export default function AdminDashboard() {
       }
 
       if (!token) {
-        navigate('/admin');
+        navigate('/admin-clalex-secure-2026');
         return;
       }
 
@@ -53,7 +53,7 @@ export default function AdminDashboard() {
     if (supabase) {
       await supabase.auth.signOut();
     }
-    navigate('/admin');
+    navigate('/admin-clalex-secure-2026');
   };
 
   const handleSave = async (e?: React.FormEvent) => {

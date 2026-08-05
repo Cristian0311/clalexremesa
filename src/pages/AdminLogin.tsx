@@ -49,7 +49,7 @@ export default function AdminLogin() {
            setError(error.message);
         } else if (data.session) {
            localStorage.setItem('adminToken', data.session.access_token);
-           navigate('/admin/dashboard');
+           navigate('/admin-clalex-secure-2026/dashboard');
         }
       } else {
         const res = await fetch('/api/login', {
@@ -61,7 +61,7 @@ export default function AdminLogin() {
 
         if (data.success) {
           localStorage.setItem('adminToken', data.token);
-          navigate('/admin/dashboard');
+          navigate('/admin-clalex-secure-2026/dashboard');
         } else {
           setError(data.message || 'Contraseña incorrecta');
         }
