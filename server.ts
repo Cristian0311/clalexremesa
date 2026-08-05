@@ -16,7 +16,7 @@ const supabaseUrlRaw = (process.env.VITE_SUPABASE_URL || '').trim();
 const supabaseUrl = supabaseUrlRaw.startsWith('http') 
   ? supabaseUrlRaw 
   : (supabaseUrlRaw ? `https://${supabaseUrlRaw}.supabase.co` : '');
-const supabaseKey = (process.env.VITE_SUPABASE_ANON_KEY || '').trim(); // Usually we'd use service_role key on server, but anon key works if RLS allows or if it's just basic operations for now.
+const supabaseKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '').trim(); // Using service_role key if available to bypass RLS
 
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
@@ -147,8 +147,11 @@ async function saveConfig(newConfig: any, token?: string) {
       const { error } = await scopedSupabase
         .from('app_config')
         .upsert({ id: 1, data: updated });
-      if (!error) return; // If successful, skip file write
-      console.error('Error saving config to Supabase:', error);
+      if (!error) {
+        console.log('✅ Configuración guardada en Supabase correctamente.');
+        return; // If successful, skip file write
+      }
+      console.error('❌ Error guardando en Supabase:', error);
     } catch (e) {
       console.error('Exception saving to Supabase:', e);
     }
