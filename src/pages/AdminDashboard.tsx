@@ -66,7 +66,17 @@ export default function AdminDashboard() {
     const token = localStorage.getItem('adminToken');
 
     try {
-      const res = await fetch('/api/config', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, configUpdates: config, newPassword: newPassword || undefined }) });
+      const res = await fetch('/api/config', {
+        method: 'PUT',
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({
+          token,
+          configUpdates: config,
+          newPassword: newPassword || undefined
+        })
+      });
 
       const data = await res.json();
       if (data.success) {
