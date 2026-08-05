@@ -82,7 +82,6 @@ export default function AdminLogin() {
           </div>
         </div>
         <h2 className="text-2xl font-bold text-center text-slate-900 mb-2">Acceso Administrativo</h2>
-        <div className="text-red-500 font-bold text-center">TEST: AdminLogin Rendered</div>
         <p className="text-center text-slate-500 mb-8">Ingrese sus credenciales para acceder</p>
 
         {error && (
