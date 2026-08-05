@@ -1,18 +1,12 @@
 import { ShieldCheck, Mail, MapPin } from 'lucide-react';
+import { useConfig } from "../hooks/useConfig";
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { AppConfig } from '../types';
 import logoUrl from '../assets/images/clalex_logo_dark_1785381983172.jpg';
 
 export default function Footer() {
-  const [config, setConfig] = useState<AppConfig | null>(null);
-
-  useEffect(() => {
-    fetch('/api/config')
-      .then(res => res.json())
-      .then(data => setConfig(data))
-      .catch(console.error);
-  }, []);
+  const { config } = useConfig();
 
   return (
     <footer className="bg-slate-950 text-slate-400 py-16 border-t border-white/5 relative overflow-hidden">

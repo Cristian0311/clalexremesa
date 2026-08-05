@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useConfig } from "../hooks/useConfig";
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Menu, X, MessageCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { AppConfig } from '../types';
@@ -7,17 +8,10 @@ import { supabase } from '../lib/supabase';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [config, setConfig] = useState<AppConfig | null>(null);
+  const { config } = useConfig();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    fetch('/api/config')
-      .then(res => res.json())
-      .then(data => {
-        setConfig(data);
-      })
-      .catch(console.error);
-
     // Check if user is an admin via Supabase
     if (supabase) {
       const adminEmails = ['clalexremesa@gmail.com', 'cristianmarco2003@gmail.com'];

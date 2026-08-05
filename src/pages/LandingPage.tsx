@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useConfig } from '../hooks/useConfig';
 import { motion } from 'motion/react';
 import { 
   ShieldCheck, 
@@ -27,16 +28,11 @@ import { supabase } from '../lib/supabase';
 import { Link } from 'react-router-dom';
 
 export default function LandingPage() {
-  const [config, setConfig] = useState<AppConfig | null>(null);
+  const { config, isLoading } = useConfig();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    fetch('/api/config')
-      .then(res => res.json())
-      .then(data => setConfig(data))
-      .catch(console.error);
-      
     // Check if user is an admin via Supabase
     if (supabase) {
       const adminEmails = ['clalexremesa@gmail.com', 'cristianmarco2003@gmail.com'];

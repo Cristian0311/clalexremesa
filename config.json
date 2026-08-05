@@ -1,0 +1,67 @@
+{
+  "companyName": "Clalex Divisa",
+  "description": "Empresa líder en remesas internacionales, conectando familias con seguridad, rapidez y confianza.",
+  "whatsapp": "51986771394",
+  "email": "clalexremesa@gmail.com",
+  "socials": {
+    "facebook": "https://facebook.com/clalexdivisas",
+    "instagram": "https://instagram.com/clalexdivisas"
+  },
+  "promoBannerActive": true,
+  "promoBannerText": "🎉 ¡Aprovecha la mejor tasa de envío hoy mismo!",
+  "rates": {
+    "usdCashFee": 5
+  },
+  "deliveryMethods": {
+    "transferCUP": true,
+    "cashCUP": true,
+    "cashUSD": true
+  },
+  "faqs": [
+    {
+      "id": "1",
+      "q": "¿Cuánto tiempo tarda en llegar la remesa?",
+      "a": "La mayoría de nuestras transferencias se completan el mismo día. Dependiendo del método de entrega en Cuba, puede tomar desde unos minutos hasta 24 horas hábiles."
+    },
+    {
+      "id": "2",
+      "q": "¿Qué datos necesito de la persona en Cuba?",
+      "a": "Para transferencias bancarias, necesitará el nombre completo del titular, número de carnet de identidad y el número de la tarjeta (MLC o CUP)."
+    },
+    {
+      "id": "3",
+      "q": "¿Hay algún límite de envío?",
+      "a": "Por favor, contáctenos vía WhatsApp para conocer los límites actuales y las mejores opciones para envíos grandes."
+    },
+    {
+      "id": "4",
+      "q": "¿Cómo sé que mi dinero está seguro?",
+      "a": "Todo el proceso se realiza bajo estricto control y le mantenemos informado en cada paso mediante WhatsApp hasta que el destinatario confirme la recepción."
+    }
+  ],
+  "heroText": {
+    "title": "Envía remesas desde Perú a Cuba",
+    "subtitle": "Conéctate con los tuyos de forma rápida, segura y confiable. Disfruta de tasas competitivas y atención personalizada en cada transacción."
+  },
+  "benefits": [
+    {
+      "id": "1",
+      "title": "Rapidez Garantizada",
+      "description": "Procesamiento inmediato. Su dinero llega a su destino en el menor tiempo posible."
+    },
+    {
+      "id": "2",
+      "title": "Máxima Seguridad",
+      "description": "Transacciones 100% seguras y soporte personalizado a través de nuestro WhatsApp oficial."
+    },
+    {
+      "id": "3",
+      "title": "La Mejor Tasa del Mercado",
+      "description": "Actualizamos nuestra tasa de cambio diariamente para ofrecerle el mayor beneficio."
+    }
+  ],
+  "schedules": "Lunes a Sábado: 8:00 AM - 8:00 PM\nDomingos: 9:00 AM - 2:00 PM",
+  "promotions": "¡Envíos mayores a 1000 PEN participan en sorteos mensuales!",
+  "adminEmail": "clalexremesa@gmail.com",
+  "adminPassword": "clalexremesa03"
+}

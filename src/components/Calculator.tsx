@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useConfig } from '../hooks/useConfig';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowDown, Info, MessageCircle, AlertCircle, RefreshCw, CreditCard, Banknote, ChevronLeft, Send, ArrowRight, HelpCircle, X, CheckCircle2 } from 'lucide-react';
 import { AppConfig } from '../types';
@@ -92,8 +93,7 @@ const BrandLogo = ({ brand }: { brand: 'YAPE' | 'PLIN' | 'DALE' }) => {
 
 export default function Calculator() {
   const [penAmount, setPenAmount] = useState<number | ''>('');
-  const [config, setConfig] = useState<AppConfig | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { config, isLoading } = useConfig();
   const [selectedMethod, setSelectedMethod] = useState<DeliveryMethod | null>(null);
   const [step, setStep] = useState(1);
 
@@ -103,20 +103,12 @@ export default function Calculator() {
   const [observations, setObservations] = useState('');
 
   useEffect(() => {
-    fetch('/api/config')
-      .then(res => res.json())
-      .then(data => {
-        setConfig(data);
-        if (data.deliveryMethods.transferCUP) setSelectedMethod('transferCUP');
-        else if (data.deliveryMethods.cashCUP) setSelectedMethod('cashCUP');
-        else if (data.deliveryMethods.cashUSD) setSelectedMethod('cashUSD');
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setIsLoading(false);
-      });
-  }, []);
+    if (config && !selectedMethod) {
+      if (config.deliveryMethods.transferCUP) setSelectedMethod('transferCUP');
+      else if (config.deliveryMethods.cashCUP) setSelectedMethod('cashCUP');
+      else if (config.deliveryMethods.cashUSD) setSelectedMethod('cashUSD');
+    }
+  }, [config, selectedMethod]);
 
   const getActiveRate = () => {
     if (!config || !selectedMethod) return 0;
