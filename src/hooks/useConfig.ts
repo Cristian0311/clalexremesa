@@ -30,6 +30,7 @@ export function useConfig() {
     let pollInterval: any = null;
 
     if (supabase) {
+      console.log('[Supabase Debug] Intentando conectar al canal en tiempo real...');
       // Subscribe to real-time changes on the app_config table
       channel = supabase
         .channel(`schema-db-changes-${Math.random().toString(36).substring(7)}`)
@@ -41,7 +42,7 @@ export function useConfig() {
             table: 'app_config',
           },
           (payload) => {
-            console.log('Realtime change received from Supabase:', payload);
+            console.log('[Supabase Debug] ✅ Cambio en tiempo real recibido:', payload);
             if (payload.new && (payload.new as any).data) {
               if (isMounted) {
                 setConfig(prev => ({
@@ -55,13 +56,16 @@ export function useConfig() {
             }
           }
         )
-        .subscribe();
+        .subscribe((status, err) => {
+          console.log('[Supabase Debug] Estado de suscripción al canal:', status);
+          if (err) console.error('[Supabase Debug] Error en la suscripción:', err);
+        });
     }
     
     // Polling fallback to ensure we always have fresh data even if realtime fails due to RLS
     pollInterval = setInterval(() => {
       fetchConfig();
-    }, 15000); // Check every 15 seconds
+    }, 120000); // Check every 2 minutes
 
     return () => {
       isMounted = false;

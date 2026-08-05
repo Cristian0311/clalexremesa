@@ -97,6 +97,11 @@ async function getConfig() {
   if (supabase) {
     try {
       const { data, error } = await supabase.from('app_config').select('data').eq('id', 1).single();
+      
+      if (error) {
+        console.error('Supabase fetch error:', error);
+      }
+      
       if (data && data.data) {
         return { 
           ...DEFAULT_CONFIG, 
