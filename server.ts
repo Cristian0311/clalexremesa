@@ -170,8 +170,12 @@ app.get('/api/config', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   const email = (req.query.email || req.body.email) as string;
   const password = (req.query.password || req.body.password) as string;
-  const config = await getConfig();
-  if (email === config.adminEmail && password === config.adminPassword) {
+  
+  // Priorizar variables de entorno para autenticación administrativa
+  const adminEmail = process.env.ADMIN_EMAIL || (await getConfig()).adminEmail;
+  const adminPassword = process.env.ADMIN_PASSWORD || (await getConfig()).adminPassword;
+
+  if (email === adminEmail && password === adminPassword) {
     res.json({ success: true, token: 'admin-token-secret-123' });
   } else {
     res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
