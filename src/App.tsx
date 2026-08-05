@@ -21,7 +21,7 @@ function AppContent() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/admin-clalex-secure-2026" element={<AdminLogin />} />
+          <Route path="/admin-clalex-secure-2026" element={<AdminDashboard />} />
           <Route path="/admin-clalex-secure-2026/dashboard" element={<AdminDashboard />} />
         </Routes>
       </main>

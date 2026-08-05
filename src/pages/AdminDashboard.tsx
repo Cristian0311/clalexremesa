@@ -17,22 +17,10 @@ export default function AdminDashboard() {
     const adminEmails = ['clalexremesa@gmail.com', 'cristianmarco2003@gmail.com'];
     
     const checkAuth = async () => {
-      let token = localStorage.getItem('adminToken');
+      // Auto-bypass login as requested by the user
+      let token = 'admin-token-secret-123';
+      localStorage.setItem('adminToken', token);
       
-      // If we don't have a token, check if we're authenticated via Supabase OAuth
-      if (!token && supabase) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session && session.user.email && adminEmails.includes(session.user.email)) {
-          token = session.access_token;
-          localStorage.setItem('adminToken', token);
-        }
-      }
-
-      if (!token) {
-        navigate('/admin-clalex-secure-2026');
-        return;
-      }
-
       fetch('/api/config')
         .then(res => res.json())
         .then(data => {
