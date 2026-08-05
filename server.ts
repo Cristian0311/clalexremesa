@@ -88,7 +88,7 @@ const DEFAULT_CONFIG = {
   ],
   schedules: 'Lunes a Sábado: 8:00 AM - 8:00 PM\nDomingos: 9:00 AM - 2:00 PM',
   promotions: '¡Envíos mayores a 1000 PEN participan en sorteos mensuales!',
-  adminPassword: 'admin',
+  adminPassword: 'clalexremesa#031111',
 };
 
 async function getConfig() {
@@ -221,7 +221,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }

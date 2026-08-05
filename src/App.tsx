@@ -13,7 +13,7 @@ import Footer from './components/Footer';
 
 function AppContent() {
   const location = useLocation();
-  const isAdminPath = location.pathname.startsWith('/admin');
+  const isAdminPath = location.pathname.startsWith('/admin-clalex-secure-2026');
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
@@ -21,8 +21,8 @@ function AppContent() {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-clalex-secure-2026" element={<AdminLogin />} />
+          <Route path="/admin-clalex-secure-2026/dashboard" element={<AdminDashboard />} />
         </Routes>
       </main>
       {!isAdminPath && <Footer />}

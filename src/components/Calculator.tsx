@@ -378,7 +378,22 @@ ${observations || 'Ninguna'}`;
                       type="number"
                       min="0"
                       value={penAmount}
-                      onChange={(e) => setPenAmount(e.target.value === '' ? '' : Number(e.target.value))}
+                      onKeyDown={(e) => {
+                        if (e.key === '-' || e.key === 'e' || e.key === '+' || e.key === 'E') {
+                          e.preventDefault();
+                        }
+                      }}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '') {
+                          setPenAmount('');
+                        } else {
+                          const num = parseFloat(value);
+                          if (num >= 0) {
+                            setPenAmount(num);
+                          }
+                        }
+                      }}
                       className="block w-full pl-7 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
                       placeholder="0.00"
                     />

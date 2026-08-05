@@ -109,20 +109,11 @@ export default function Navbar() {
               >
                 Calculadora
               </a>
-              {isAdmin && (
-               <Link to="/admin" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors p-2 ml-2 hover:bg-white/5 rounded-lg" title="Panel Administrativo">
-                  <ShieldCheck size={18} />
-               </Link>
-              )}
+              {/* Admin link removed for security */}
             </div>
 
             {/* Mobile menu button */}
             <div className="flex md:hidden items-center gap-3">
-              {isAdmin && (
-                <Link to="/admin" className="text-slate-400 hover:text-white transition-colors p-2">
-                   <ShieldCheck size={20} />
-                </Link>
-              )}
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="text-slate-300 hover:text-white p-2"
