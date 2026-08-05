@@ -37,42 +37,44 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
+      // 1. Try local API login first (checks config.json credentials)
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem('adminToken', data.token);
+          navigate('/admin-clalex-secure-2026/dashboard');
+          return;
+        }
+      }
+
+      // 2. If local login fails and supabase is available, try Supabase auth
       if (supabase) {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password
         });
-        if (!adminEmails.includes(email)) {
-           setError('No tienes permisos de administrador.');
-           await supabase.auth.signOut();
-        } else if (error) {
+        
+        if (error) {
            setError(error.message);
         } else if (data.session) {
-           localStorage.setItem('adminToken', data.session.access_token);
-           navigate('/admin-clalex-secure-2026/dashboard');
+           if (!adminEmails.includes(email)) {
+             setError('No tienes permisos de administrador.');
+             await supabase.auth.signOut();
+           } else {
+             localStorage.setItem('adminToken', data.session.access_token);
+             navigate('/admin-clalex-secure-2026/dashboard');
+           }
         }
       } else {
-        const res = await fetch('/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-        });
-        
-        if (!res.ok) {
-           console.error('Login request failed:', res.status, res.statusText);
-           throw new Error(`Error de servidor (${res.status})`);
-        }
-
-        const data = await res.json();
-
-        if (data.success) {
-          localStorage.setItem('adminToken', data.token);
-          navigate('/admin-clalex-secure-2026/dashboard');
-        } else {
-          setError(data.message || 'Credenciales incorrectas');
-        }
+        setError('Credenciales incorrectas');
       }
     } catch (err: any) {
       console.error('Login error:', err);

@@ -5,18 +5,18 @@ import { createServer as createViteServer } from 'vite';
 import { createClient } from '@supabase/supabase-js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.APPLET_ID ? 3000 : process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const CONFIG_FILE = process.env.CONFIG_PATH || path.join(process.cwd(), 'config.json');
 
-const supabaseUrlRaw = process.env.VITE_SUPABASE_URL || '';
+const supabaseUrlRaw = (process.env.VITE_SUPABASE_URL || '').trim();
 const supabaseUrl = supabaseUrlRaw.startsWith('http') 
   ? supabaseUrlRaw 
   : (supabaseUrlRaw ? `https://${supabaseUrlRaw}.supabase.co` : '');
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || ''; // Usually we'd use service_role key on server, but anon key works if RLS allows or if it's just basic operations for now.
+const supabaseKey = (process.env.VITE_SUPABASE_ANON_KEY || '').trim(); // Usually we'd use service_role key on server, but anon key works if RLS allows or if it's just basic operations for now.
 
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
