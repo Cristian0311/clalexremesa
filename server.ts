@@ -8,6 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const CONFIG_FILE = process.env.CONFIG_PATH || path.join(process.cwd(), 'config.json');
 
@@ -167,7 +168,8 @@ app.get('/api/config', async (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
+  const email = (req.query.email || req.body.email) as string;
+  const password = (req.query.password || req.body.password) as string;
   const config = await getConfig();
   if (email === config.adminEmail && password === config.adminPassword) {
     res.json({ success: true, token: 'admin-token-secret-123' });

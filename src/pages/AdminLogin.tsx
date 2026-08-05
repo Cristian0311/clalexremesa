@@ -54,20 +54,29 @@ export default function AdminLogin() {
       } else {
         const res = await fetch('/api/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({ email, password })
         });
+        
+        if (!res.ok) {
+           console.error('Login request failed:', res.status, res.statusText);
+           throw new Error(`Error de servidor (${res.status})`);
+        }
+
         const data = await res.json();
 
         if (data.success) {
           localStorage.setItem('adminToken', data.token);
           navigate('/admin-clalex-secure-2026/dashboard');
         } else {
-          setError(data.message || 'Contraseña incorrecta');
+          setError(data.message || 'Credenciales incorrectas');
         }
       }
-    } catch (err) {
-      setError('Error al conectar con el servidor');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err.message || 'Error al conectar con el servidor');
     } finally {
       setIsLoading(false);
     }
