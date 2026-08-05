@@ -88,7 +88,8 @@ const DEFAULT_CONFIG = {
   ],
   schedules: 'Lunes a Sábado: 8:00 AM - 8:00 PM\nDomingos: 9:00 AM - 2:00 PM',
   promotions: '¡Envíos mayores a 1000 PEN participan en sorteos mensuales!',
-  adminPassword: 'clalexremesa#031111',
+  adminEmail: 'clalexremesa@gmail.com',
+  adminPassword: 'clalexremesa03',
 };
 
 async function getConfig() {
@@ -103,6 +104,7 @@ async function getConfig() {
           socials: { ...DEFAULT_CONFIG.socials, ...(data.data.socials || {}) },
           deliveryMethods: { ...DEFAULT_CONFIG.deliveryMethods, ...(data.data.deliveryMethods || {}) },
           heroText: { ...DEFAULT_CONFIG.heroText, ...(data.data.heroText || {}) },
+          adminEmail: data.data.adminEmail || DEFAULT_CONFIG.adminEmail,
           adminPassword: data.data.adminPassword || DEFAULT_CONFIG.adminPassword 
         };
       }
@@ -121,6 +123,7 @@ async function getConfig() {
       socials: { ...DEFAULT_CONFIG.socials, ...(parsedData.socials || {}) },
       deliveryMethods: { ...DEFAULT_CONFIG.deliveryMethods, ...(parsedData.deliveryMethods || {}) },
       heroText: { ...DEFAULT_CONFIG.heroText, ...(parsedData.heroText || {}) },
+      adminEmail: parsedData.adminEmail || DEFAULT_CONFIG.adminEmail,
       adminPassword: parsedData.adminPassword || DEFAULT_CONFIG.adminPassword 
     };
   } catch (error) {
@@ -164,12 +167,12 @@ app.get('/api/config', async (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
-  const { password } = req.body;
+  const { email, password } = req.body;
   const config = await getConfig();
-  if (password === config.adminPassword) {
+  if (email === config.adminEmail && password === config.adminPassword) {
     res.json({ success: true, token: 'admin-token-secret-123' });
   } else {
-    res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
+    res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
   }
 });
 

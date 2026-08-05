@@ -55,7 +55,7 @@ export default function AdminLogin() {
         const res = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password })
+          body: JSON.stringify({ email, password })
         });
         const data = await res.json();
 
@@ -91,24 +91,22 @@ export default function AdminLogin() {
         )}
 
         <form onSubmit={handleLogin} className="space-y-6">
-          {supabase && (
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Correo Electrónico</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="text-slate-400" size={20} />
-                </div>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all"
-                  placeholder="admin@example.com"
-                  required
-                />
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">Correo Electrónico</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Mail className="text-slate-400" size={20} />
               </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none transition-all"
+                placeholder="admin@example.com"
+                required
+              />
             </div>
-          )}
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">Contraseña</label>
