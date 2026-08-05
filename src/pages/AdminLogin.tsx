@@ -54,9 +54,7 @@ export default function AdminLogin() {
       } else {
         const res = await fetch('/api/login', {
           method: 'POST',
-          headers: new Headers({
-            'Content-Type': 'application/json'
-          }),
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
         const data = await res.json();

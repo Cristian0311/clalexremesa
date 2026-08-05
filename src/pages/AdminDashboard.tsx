@@ -68,9 +68,7 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/config', {
         method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        }),
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token,
           configUpdates: config,
