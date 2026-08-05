@@ -148,9 +148,27 @@ export default function Calculator() {
     return '';
   };
 
-  const receiveAmount = typeof penAmount === 'number' && config && selectedMethod
-    ? (penAmount * getActiveRate()).toFixed(2) 
-    : '0.00';
+  let receiveAmount = '0.00';
+  let remainderCUP = 0;
+  let hasRemainder = false;
+
+  if (typeof penAmount === 'number' && config && selectedMethod) {
+    const rawAmount = penAmount * getActiveRate();
+    if (selectedMethod === 'cashUSD') {
+      const roundedUSD = Math.floor(rawAmount);
+      const remainderUSD = rawAmount - roundedUSD;
+      if (remainderUSD > 0.001) {
+        hasRemainder = true;
+        const remainderPEN = remainderUSD / getActiveRate();
+        remainderCUP = remainderPEN * (config.rates.transferCUP || 85.5);
+        receiveAmount = `${roundedUSD}`;
+      } else {
+        receiveAmount = roundedUSD.toFixed(2);
+      }
+    } else {
+      receiveAmount = rawAmount.toFixed(2);
+    }
+  }
 
   const [processState, setProcessState] = useState<'idle' | 'processing' | 'success'>('idle');
 
@@ -179,7 +197,7 @@ ${selectedMethod === 'transferCUP' ? `- Tarjeta: ${receiverData.card}` : ''}
 - Monto enviado: S/ ${penAmount} PEN
 - Método: ${getMethodName()}
 ${selectedMethod === 'cashUSD' ? `- Tasa base: S/ 1 = $${getBaseRate()} USD\n- Comisión Efectivo: ${config.rates.usdCashFee ?? 5}%\n- Tasa efectiva aplicada: S/ 1 = $${getActiveRate()} USD` : `- Tasa de cambio: S/ 1 = $${getActiveRate()} ${getCurrency()}`}
-- A recibir: $${receiveAmount} ${getCurrency()}
+- A recibir: $${receiveAmount} ${getCurrency()}${hasRemainder ? ` + ${remainderCUP.toFixed(2)} CUP` : ''}
 
 *Observaciones:*
 ${observations || 'Ninguna'}`;
@@ -347,12 +365,20 @@ ${observations || 'Ninguna'}`;
                       </div>
                       <div className="flex justify-between items-center text-red-500">
                         <span className="font-medium">Comisión ({config.rates.usdCashFee ?? 5}%)</span>
-                        <span className="font-bold">- ${((penAmount * getBaseRate()) - Number(receiveAmount)).toFixed(2)}</span>
+                        <span className="font-bold">- ${((penAmount * getBaseRate()) * ((config.rates.usdCashFee ?? 5) / 100)).toFixed(2)}</span>
                       </div>
+                      {hasRemainder && (
+                        <div className="flex justify-between items-center text-amber-600 border-t border-slate-200/50 pt-1.5 mt-1.5">
+                          <span className="font-medium">Cambio a MN (Diferencia)</span>
+                          <span className="font-bold">+ {remainderCUP.toFixed(2)} CUP</span>
+                        </div>
+                      )}
                     </div>
                     <div className="px-3 py-2 bg-blue-50/80 border-t border-blue-100 flex justify-between items-center">
                       <span className="text-[9px] font-black uppercase tracking-widest text-blue-900">Total a recibir</span>
-                      <span className="text-xs font-black text-blue-700">${receiveAmount} USD</span>
+                      <div className="flex items-end gap-1">
+                        <span className="text-xs font-black text-blue-700">${receiveAmount} USD</span>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -426,6 +452,12 @@ ${observations || 'Ninguna'}`;
                       <div className="bg-emerald-100 text-emerald-700 text-[8px] font-bold px-1 py-0.5 rounded">{getCurrency()}</div>
                     </div>
                   </div>
+                  {hasRemainder && (
+                    <div className="mt-1 flex items-center gap-1.5 px-2 py-1 bg-amber-50 rounded-md border border-amber-100">
+                      <span className="text-[10px] font-bold text-amber-700">+ {remainderCUP.toFixed(2)} CUP</span>
+                      <span className="text-[8px] font-bold text-amber-600/70 uppercase">(Cambio MN)</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -590,7 +622,10 @@ ${observations || 'Ninguna'}`;
                 <div className="flex items-center justify-between bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
                   <div className="flex flex-col">
                     <span className="text-[7px] font-black uppercase tracking-wider text-emerald-600">Total Recibe</span>
-                    <span className="text-sm font-black leading-none text-slate-900">${receiveAmount} <span className="text-[9px] opacity-70">{getCurrency()}</span></span>
+                    <div className="flex items-end gap-1">
+                      <span className="text-sm font-black leading-none text-slate-900">${receiveAmount} <span className="text-[9px] opacity-70">{getCurrency()}</span></span>
+                      {hasRemainder && <span className="text-[9px] font-bold text-amber-600 mb-[1px]">+ {remainderCUP.toFixed(2)} CUP</span>}
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <button type="button" onClick={() => setStep(1)} className="bg-white hover:bg-slate-50 text-slate-500 p-1 rounded-md border border-slate-200 transition-all active:scale-95 disabled:opacity-50" disabled={processState !== 'idle'}>
