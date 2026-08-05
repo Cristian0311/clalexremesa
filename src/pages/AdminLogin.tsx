@@ -52,13 +52,7 @@ export default function AdminLogin() {
            navigate('/admin-clalex-secure-2026/dashboard');
         }
       } else {
-        const res = await fetch('/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-        });
+        const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
         const data = await res.json();
 
         if (data.success) {
