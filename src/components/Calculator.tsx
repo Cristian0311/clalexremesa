@@ -174,14 +174,10 @@ export default function Calculator() {
 
 *Remitente:*
 - Nombre: ${senderData.name}
-- Documento: ${senderData.document}
-- Ciudad: ${senderData.city}
 - Teléfono: ${senderData.phone}
 
 *Destinatario:*
 - Nombre: ${receiverData.name}
-- Provincia: ${receiverData.province}
-- Municipio: ${receiverData.municipality}
 - Teléfono: ${receiverData.phone}
 ${selectedMethod === 'transferCUP' ? `- Tarjeta: ${receiverData.card}` : ''}
 
@@ -236,6 +232,7 @@ ${observations || 'Ninguna'}`;
         <motion.div
           animate={{ x: [0, -1000] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          style={{ willChange: 'transform' }}
           className="flex items-center gap-16 text-[10px] font-black text-white uppercase tracking-[0.2em] w-max"
         >
           {Array.from({ length: 10 }).map((_, i) => (
@@ -412,7 +409,7 @@ ${observations || 'Ninguna'}`;
                           }
                         }
                       }}
-                      className="block w-full pl-7 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
+                      className="block w-full pl-7 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[16px] md:text-sm font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
                       placeholder="0.00"
                     />
                     <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
@@ -446,7 +443,7 @@ ${observations || 'Ninguna'}`;
                   </div>
                   {hasRemainder && (
                     <div className="mt-1 flex items-center gap-1.5 px-2 py-1 bg-amber-50 rounded-md border border-amber-100">
-                      <span className="text-[10px] font-bold text-amber-700">+ {remainderCUP.toFixed(2)} CUP</span>
+                      <span className="text-[16px] md:text-sm font-bold text-amber-700">+ {remainderCUP.toFixed(2)} CUP</span>
                       <span className="text-[8px] font-bold text-amber-600/70 uppercase">(Cambio MN)</span>
                     </div>
                   )}
@@ -487,35 +484,14 @@ ${observations || 'Ninguna'}`;
                           Nombre Completo
                           <HelpBubble title="Ayuda" description="Ingresa tus nombres y apellidos completos tal como figuran en tu documento." />
                         </label>
-                        <input required type="text" placeholder="Ej: Juan Pérez" value={senderData.name} onChange={e => setSenderData({...senderData, name: e.target.value})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[10px] font-bold" />
+                        <input required type="text" placeholder="Ej: Juan Pérez" value={senderData.name} onChange={e => setSenderData({...senderData, name: e.target.value})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
                       </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <label className="flex items-center justify-between text-[7px] font-black text-slate-500 uppercase tracking-widest px-0.5">
-                            DNI / Pasaporte
-                            <HelpBubble title="Documento" description="Ingresa solo los números de tu DNI, Pasaporte o Carnet de Extranjería." />
-                          </label>
-                          <input required type="text" placeholder="Número" value={senderData.document} onChange={e => setSenderData({...senderData, document: e.target.value.replace(/\D/g, '')})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[10px] font-bold" />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="flex items-center justify-between text-[7px] font-black text-slate-500 uppercase tracking-widest px-0.5">
-                            WhatsApp
-                            <HelpBubble title="Contacto" description="Tu número de WhatsApp para enviarte el comprobante de la operación." />
-                          </label>
-                          <input required type="text" placeholder="999..." value={senderData.phone} onChange={e => setSenderData({...senderData, phone: e.target.value.replace(/\D/g, '')})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[10px] font-bold" />
-                        </div>
-                      </div>
-
                       <div className="space-y-1">
                         <label className="flex items-center justify-between text-[7px] font-black text-slate-500 uppercase tracking-widest px-0.5">
-                          Ciudad (Perú)
-                          <HelpBubble title="Ubicación" description="Selecciona la ciudad o provincia desde donde realizas el envío." />
+                          WhatsApp
+                          <HelpBubble title="Contacto" description="Tu número de WhatsApp para enviarte el comprobante de la operación." />
                         </label>
-                        <select required value={senderData.city} onChange={e => setSenderData({...senderData, city: e.target.value})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[10px] font-bold appearance-none">
-                          <option value="" disabled>Seleccionar</option>
-                          {peruDepartments.map(dep => <option key={dep} value={dep}>{dep}</option>)}
-                        </select>
+                        <input required type="text" placeholder="999..." value={senderData.phone} onChange={e => setSenderData({...senderData, phone: e.target.value.replace(/\D/g, '')})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
                       </div>
                     </div>
                   </div>
@@ -538,32 +514,8 @@ ${observations || 'Ninguna'}`;
                           Nombre Beneficiario
                           <HelpBubble title="Destinatario" description="Nombre y apellidos de la persona que recibirá el dinero en Cuba." />
                         </label>
-                        <input required type="text" placeholder="Ej: María García" value={receiverData.name} onChange={e => setReceiverData({...receiverData, name: e.target.value})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[10px] font-bold" />
+                        <input required type="text" placeholder="Ej: María García" value={receiverData.name} onChange={e => setReceiverData({...receiverData, name: e.target.value})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
                       </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <label className="flex items-center justify-between text-[7px] font-black text-slate-500 uppercase tracking-widest px-0.5">
-                            Provincia
-                            <HelpBubble title="Cuba" description="Selecciona la provincia de destino en Cuba." />
-                          </label>
-                          <select required value={receiverData.province} onChange={e => setReceiverData({...receiverData, province: e.target.value, municipality: ''})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[10px] font-bold appearance-none">
-                            <option value="" disabled>Prov.</option>
-                            {Object.keys(cubaProvinces).map(prov => <option key={prov} value={prov}>{prov}</option>)}
-                          </select>
-                        </div>
-                        <div className="space-y-1">
-                          <label className="flex items-center justify-between text-[7px] font-black text-slate-500 uppercase tracking-widest px-0.5">
-                            Municipio
-                            <HelpBubble title="Cuba" description="Selecciona el municipio correspondiente a la provincia." />
-                          </label>
-                          <select required value={receiverData.municipality} onChange={e => setReceiverData({...receiverData, municipality: e.target.value})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[10px] font-bold appearance-none disabled:opacity-50" disabled={!receiverData.province}>
-                            <option value="" disabled>Mun.</option>
-                            {receiverData.province && cubaProvinces[receiverData.province]?.map(mun => <option key={mun} value={mun}>{mun}</option>)}
-                          </select>
-                        </div>
-                      </div>
-
                       <div className="space-y-3">
                         {selectedMethod === 'transferCUP' && (
                           <div className="space-y-1 bg-emerald-50/50 p-2 rounded-lg border border-emerald-100">
@@ -586,7 +538,7 @@ ${observations || 'Ninguna'}`;
                                   const formattedValue = rawValue.match(/.{1,4}/g)?.join('-') || rawValue;
                                   setReceiverData({...receiverData, card: formattedValue});
                                 }} 
-                                className="w-full pl-8 pr-2 py-1.5 bg-white border border-emerald-200 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-[11px] font-black text-emerald-700 placeholder:text-emerald-200" 
+                                className="w-full pl-8 pr-2 py-1.5 bg-white border border-emerald-200 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-[16px] md:text-sm font-black text-emerald-700 placeholder:text-emerald-200" 
                               />
                             </div>
                           </div>
@@ -597,7 +549,7 @@ ${observations || 'Ninguna'}`;
                             Teléfono Cuba
                             <HelpBubble title="Contacto Cuba" description="Número móvil o fijo de la persona que recibe (con código 53)." />
                           </label>
-                          <input required type="text" placeholder="53..." value={receiverData.phone} onChange={e => setReceiverData({...receiverData, phone: e.target.value.replace(/\D/g, '')})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[10px] font-bold" />
+                          <input required type="text" placeholder="53..." value={receiverData.phone} onChange={e => setReceiverData({...receiverData, phone: e.target.value.replace(/\D/g, '')})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
                         </div>
                       </div>
                     </div>
@@ -608,7 +560,7 @@ ${observations || 'Ninguna'}`;
                   <label className="flex items-center justify-between text-[7px] font-black text-slate-500 uppercase tracking-widest px-0.5">
                     Observaciones (Opcional)
                   </label>
-                  <textarea rows={1} value={observations} onChange={e => setObservations(e.target.value)} className="w-full px-2 py-0.5 bg-slate-50 border border-slate-200 rounded-md focus:bg-white focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all resize-none text-[9px] font-medium" placeholder="Escribe aquí..."></textarea>
+                  <textarea rows={1} value={observations} onChange={e => setObservations(e.target.value)} className="w-full px-2 py-0.5 bg-slate-50 border border-slate-200 rounded-md focus:bg-white focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all resize-none text-[16px] md:text-sm font-medium" placeholder="Escribe aquí..."></textarea>
                 </div>
 
                 <div className="flex items-center justify-between bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">

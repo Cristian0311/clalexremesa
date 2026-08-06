@@ -99,10 +99,11 @@ async function getConfig() {
       const { data, error } = await supabase.from('app_config').select('data').eq('id', 1).single();
       
       if (error) {
-        console.error('Supabase fetch error:', error);
+        console.error('[Supabase Debug] Error fetching from Supabase:', error);
       }
       
       if (data && data.data) {
+        console.log('[Supabase Debug] ✅ Data fetched successfully from Supabase database.');
         return { 
           ...DEFAULT_CONFIG, 
           ...data.data, 
@@ -113,6 +114,8 @@ async function getConfig() {
           adminEmail: data.data.adminEmail || DEFAULT_CONFIG.adminEmail,
           adminPassword: data.data.adminPassword || DEFAULT_CONFIG.adminPassword 
         };
+      } else {
+        console.warn('[Supabase Debug] ⚠️ No data found in Supabase for id=1, falling back to local file.');
       }
     } catch (e) {
       console.error('Error fetching config from Supabase', e);

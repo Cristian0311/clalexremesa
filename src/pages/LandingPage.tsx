@@ -82,12 +82,12 @@ export default function LandingPage() {
           <motion.div 
             animate={{ y: [0, -30, 0], x: [0, 10, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[10%] right-[10%] w-[30rem] h-[30rem] bg-blue-600/10 rounded-full blur-[100px]"
+            className="absolute top-[10%] right-[10%] w-[30rem] h-[30rem] bg-blue-600/10 rounded-full blur-[100px] hidden md:block"
           />
           <motion.div 
             animate={{ y: [0, 40, 0], x: [0, -20, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-            className="absolute bottom-[-10%] left-[-5%] w-[25rem] h-[25rem] bg-emerald-500/10 rounded-full blur-[80px]"
+            className="absolute bottom-[-10%] left-[-5%] w-[25rem] h-[25rem] bg-emerald-500/10 rounded-full blur-[80px] hidden md:block"
           />
         </div>
         
@@ -151,8 +151,30 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-3xl blur opacity-20"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-3xl blur opacity-20 hidden md:block"></div>
               <Calculator />
+              
+              {/* Nuevo bloque de información de proceso optimizado para móviles */}
+              <div className="mt-6 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-amber-500/20 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden ">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10"></div>
+                <h4 className="text-base font-black text-slate-900 mb-4 flex items-center gap-2">
+                  <CheckCircle2 size={18} className="text-amber-500" /> ¿Cómo solicitar tu remesa?
+                </h4>
+                <ol className="space-y-4 relative before:absolute before:inset-y-0 before:left-[15px] before:w-[2px] before:bg-amber-100 pl-1">
+                  <li className="relative pl-10">
+                    <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-amber-500 border-4 border-white flex items-center justify-center text-xs font-black text-white z-10 shadow-sm">1</div>
+                    <p className="text-sm text-slate-700 leading-snug"><strong className="text-slate-900">Calcula:</strong> Ingresa el monto en la calculadora arriba.</p>
+                  </li>
+                  <li className="relative pl-10">
+                    <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-amber-500 border-4 border-white flex items-center justify-center text-xs font-black text-white z-10 shadow-sm">2</div>
+                    <p className="text-sm text-slate-700 leading-snug"><strong className="text-slate-900">Completa datos:</strong> Llena el formulario con la información tuya y del destinatario.</p>
+                  </li>
+                  <li className="relative pl-10">
+                    <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-amber-500 border-4 border-white flex items-center justify-center text-xs font-black text-white z-10 shadow-sm">3</div>
+                    <p className="text-sm text-slate-700 leading-snug"><strong className="text-slate-900">Contacta:</strong> Un asesor procesará tu pago vía WhatsApp de inmediato.</p>
+                  </li>
+                </ol>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -160,7 +182,7 @@ export default function LandingPage() {
 
       {/* Tu Remesa en Simples Pasos (Timeline 3D) */}
       <section className="py-24 bg-slate-50 relative overflow-hidden" id="how-it-works">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none hidden md:block"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div 
             className="text-center max-w-3xl mx-auto mb-20"
@@ -235,8 +257,8 @@ export default function LandingPage() {
               {...fadeIn}
               className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-amber-500 via-amber-400 to-yellow-500 p-8 md:p-12 shadow-2xl shadow-amber-500/20 text-center md:text-left flex flex-col md:flex-row items-center gap-8 border border-amber-300"
             >
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl mix-blend-overlay pointer-events-none"></div>
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-red-500/10 rounded-full blur-2xl pointer-events-none"></div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl pointer-events-none hidden md:block"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-red-500/10 rounded-full blur-2xl pointer-events-none hidden md:block"></div>
               
               <div className="flex-1 relative z-10">
                 <div className="inline-flex items-center gap-2 bg-slate-950 text-amber-400 font-black tracking-widest uppercase text-xs mb-4 px-4 py-2 rounded-full shadow-lg">
@@ -264,8 +286,8 @@ export default function LandingPage() {
 
       {/* Nuestra Promesa / Beneficios */}
       <section className="py-24 bg-white relative overflow-hidden" id="benefits">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none hidden md:block"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none hidden md:block"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div className="text-center max-w-3xl mx-auto mb-16" {...fadeIn}>
@@ -466,7 +488,7 @@ export default function LandingPage() {
       {/* FAQ */}
       {config && config.faqs && config.faqs.length > 0 && (
         <section className="py-20 bg-slate-900 text-white relative overflow-hidden" id="faq">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-[80px] pointer-events-none hidden md:block"></div>
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <motion.div className="text-center mb-10" {...fadeIn}>
               <h2 className="text-amber-500 font-bold tracking-widest uppercase text-xs mb-2">Soporte</h2>
@@ -507,8 +529,8 @@ export default function LandingPage() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-amber-950/40"></div>
           {/* Dynamic 3D/ambient lighting effects */}
-          <div className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-amber-500/15 rounded-full blur-[120px] mix-blend-screen animate-pulse pointer-events-none"></div>
-          <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] bg-amber-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+          <div className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-amber-500/15 rounded-full blur-[120px] pointer-events-none hidden md:block"></div>
+          <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] bg-amber-600/10 rounded-full blur-[100px] pointer-events-none hidden md:block"></div>
           
           <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center pointer-events-none">
             <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-100 rotate-12 scale-150 transform-gpu">
