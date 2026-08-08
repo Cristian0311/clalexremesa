@@ -168,6 +168,21 @@ export default function Calculator() {
     e.preventDefault();
     if (!config || typeof penAmount !== 'number' || penAmount <= 0 || !selectedMethod) return;
     
+    if (!senderData.name.trim() || !senderData.phone.trim()) {
+      alert('Por favor, complete los datos del remitente (Nombre y Teléfono).');
+      return;
+    }
+    
+    if (!receiverData.name.trim() || !receiverData.phone.trim()) {
+      alert('Por favor, complete los datos del destinatario (Nombre y Teléfono).');
+      return;
+    }
+    
+    if (selectedMethod === 'transferCUP' && !receiverData.card.trim()) {
+      alert('Por favor, ingrese el número de tarjeta del destinatario.');
+      return;
+    }
+    
     setProcessState('processing');
 
     const message = `*Hola ${config.companyName}, deseo realizar una remesa.*
@@ -182,7 +197,7 @@ export default function Calculator() {
 ${selectedMethod === 'transferCUP' ? `- Tarjeta: ${receiverData.card}` : ''}
 
 *Remesa:*
-- Monto enviado: S/ ${penAmount} PEN
+- Monto a enviar: S/ ${penAmount} PEN
 - Método: ${getMethodName()}
 ${selectedMethod === 'cashUSD' ? `- Tasa base: S/ 1 = $${getBaseRate()} USD\n- Comisión Efectivo: ${config.rates.usdCashFee ?? 5}%\n- Tasa efectiva aplicada: S/ 1 = $${getActiveRate()} USD` : `- Tasa de cambio: S/ 1 = $${getActiveRate()} ${getCurrency()}`}
 - A recibir: $${receiveAmount} ${getCurrency()}${hasRemainder ? ` + ${remainderCUP.toFixed(2)} CUP` : ''}
@@ -216,6 +231,21 @@ ${observations || 'Ninguna'}`;
         <AlertCircle className="text-red-500 mb-4" size={48} />
         <h3 className="text-xl font-bold text-slate-800 mb-2">Servicio no disponible</h3>
         <p className="text-slate-500">No se pudo cargar la configuración de la tasa de cambio en este momento.</p>
+      </div>
+    );
+  }
+
+  const hasDeliveryMethods = config.deliveryMethods.transferCUP || config.deliveryMethods.cashCUP || config.deliveryMethods.cashUSD;
+
+  if (!hasDeliveryMethods) {
+    return (
+      <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 shadow-2xl border border-amber-100 w-full min-h-[350px] flex flex-col items-center justify-center text-center">
+        <AlertCircle className="text-amber-500 mb-4" size={48} />
+        <h3 className="text-xl font-bold text-slate-800 mb-2">Servicio temporalmente no disponible</h3>
+        <p className="text-slate-500">En este momento no hay métodos de envío activos. Por favor, vuelva a intentarlo más tarde o contáctenos por WhatsApp.</p>
+        <a href={`https://wa.me/${config.whatsapp}?text=${encodeURIComponent('Hola, quisiera saber cuándo estarán disponibles los envíos.')}`} target="_blank" rel="noopener noreferrer" className="mt-6 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-slate-800 transition-colors">
+          Contactar por WhatsApp
+        </a>
       </div>
     );
   }
@@ -265,17 +295,20 @@ ${observations || 'Ninguna'}`;
             )}
             <h3 className="text-base font-bold tracking-wide">{step === 1 ? 'Calculadora' : 'Detalles de Envío'}</h3>
           </div>
-          {step === 1 && (
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <p className="text-[10px] text-slate-400 font-medium">Tasa en vivo</p>
-            </div>
-          )}
         </div>
         {step === 1 && (
-          <div className="text-right">
-            <p className="text-[0.6rem] text-slate-400 font-bold uppercase tracking-wider mb-0.5">1 PEN =</p>
-            <p className="text-lg font-black text-blue-400 tracking-tight">${selectedMethod === 'cashUSD' ? getBaseRate() : getActiveRate()} <span className="text-[10px] text-white font-medium">{getCurrency()}</span></p>
+          <div className="text-right flex flex-col items-end">
+            <div className="flex items-center gap-1.5 mb-1 bg-slate-800/50 px-2 py-0.5 rounded-full border border-slate-700/50">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <p className="text-[9px] text-slate-300 font-bold uppercase tracking-wider">Tasa de cambio</p>
+            </div>
+            <div className="bg-gradient-to-r from-blue-900/40 to-slate-800/40 px-3 py-1 rounded-xl border border-blue-500/20 shadow-inner">
+              <p className="text-sm font-black text-white tracking-tight">
+                <span className="text-slate-400 font-bold text-[10px] mr-1">1 PEN =</span>
+                <span className="text-amber-400">${selectedMethod === 'cashUSD' ? getBaseRate() : getActiveRate()}</span>
+                <span className="text-[9px] text-amber-200/70 ml-1 font-bold">{getCurrency()}</span>
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -409,7 +442,7 @@ ${observations || 'Ninguna'}`;
                           }
                         }
                       }}
-                      className="block w-full pl-7 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-[16px] md:text-sm font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
+                      className="block w-full pl-7 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[16px] md:text-sm font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all outline-none shadow-inner"
                       placeholder="0.00"
                     />
                     <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
@@ -419,7 +452,7 @@ ${observations || 'Ninguna'}`;
                 </div>
 
                 <div className="relative">
-                  <div className="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 z-10 pointer-events-none hidden md:flex items-center justify-center w-6 h-6 bg-white rounded-full border border-slate-200 shadow-sm text-blue-500 bg-blue-50">
+                  <div className="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 z-10 pointer-events-none hidden md:flex items-center justify-center w-6 h-6 bg-white rounded-full border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.05)] text-amber-500">
                     <ArrowRight size={12} />
                   </div>
                   <div className="flex items-center justify-between mb-1">
@@ -434,7 +467,7 @@ ${observations || 'Ninguna'}`;
                       type="text"
                       readOnly
                       value={receiveAmount}
-                      className="block w-full pl-7 pr-10 py-2 bg-emerald-50/30 border border-emerald-100 rounded-lg text-sm font-bold text-emerald-700 cursor-not-allowed outline-none"
+                      className="block w-full pl-7 pr-10 py-2.5 bg-emerald-50/50 border border-emerald-200/50 rounded-xl text-[16px] md:text-sm font-bold text-emerald-700 cursor-not-allowed outline-none shadow-inner"
                       placeholder="0.00"
                     />
                     <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
@@ -484,14 +517,14 @@ ${observations || 'Ninguna'}`;
                           Nombre Completo
                           <HelpBubble title="Ayuda" description="Ingresa tus nombres y apellidos completos tal como figuran en tu documento." />
                         </label>
-                        <input required type="text" placeholder="Ej: Juan Pérez" value={senderData.name} onChange={e => setSenderData({...senderData, name: e.target.value})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
+                        <input required type="text" placeholder="Ej: Juan Pérez" value={senderData.name} onChange={e => setSenderData({...senderData, name: e.target.value})} className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
                       </div>
                       <div className="space-y-1">
                         <label className="flex items-center justify-between text-[7px] font-black text-slate-500 uppercase tracking-widest px-0.5">
                           WhatsApp
                           <HelpBubble title="Contacto" description="Tu número de WhatsApp para enviarte el comprobante de la operación." />
                         </label>
-                        <input required type="text" placeholder="999..." value={senderData.phone} onChange={e => setSenderData({...senderData, phone: e.target.value.replace(/\D/g, '')})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
+                        <input required type="text" placeholder="999..." value={senderData.phone} onChange={e => setSenderData({...senderData, phone: e.target.value.replace(/\D/g, '')})} className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
                       </div>
                     </div>
                   </div>
@@ -514,7 +547,7 @@ ${observations || 'Ninguna'}`;
                           Nombre Beneficiario
                           <HelpBubble title="Destinatario" description="Nombre y apellidos de la persona que recibirá el dinero en Cuba." />
                         </label>
-                        <input required type="text" placeholder="Ej: María García" value={receiverData.name} onChange={e => setReceiverData({...receiverData, name: e.target.value})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
+                        <input required type="text" placeholder="Ej: María García" value={receiverData.name} onChange={e => setReceiverData({...receiverData, name: e.target.value})} className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
                       </div>
                       <div className="space-y-3">
                         {selectedMethod === 'transferCUP' && (
@@ -549,7 +582,7 @@ ${observations || 'Ninguna'}`;
                             Teléfono Cuba
                             <HelpBubble title="Contacto Cuba" description="Número móvil o fijo de la persona que recibe (con código 53)." />
                           </label>
-                          <input required type="text" placeholder="53..." value={receiverData.phone} onChange={e => setReceiverData({...receiverData, phone: e.target.value.replace(/\D/g, '')})} className="w-full px-2 py-1 bg-white border border-slate-200 rounded-md focus:ring-1 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
+                          <input required type="text" placeholder="53..." value={receiverData.phone} onChange={e => setReceiverData({...receiverData, phone: e.target.value.replace(/\D/g, '')})} className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg shadow-sm focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 outline-none transition-all text-[16px] md:text-sm font-bold" />
                         </div>
                       </div>
                     </div>
@@ -572,13 +605,16 @@ ${observations || 'Ninguna'}`;
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <button type="button" onClick={() => setStep(1)} className="bg-white hover:bg-slate-50 text-slate-500 p-1 rounded-md border border-slate-200 transition-all active:scale-95 disabled:opacity-50" disabled={processState !== 'idle'}>
-                      <ChevronLeft size={12} />
+                    <button type="button" onClick={() => setStep(1)} className="bg-white hover:bg-slate-50 text-slate-500 p-2 rounded-lg border border-slate-200 transition-all active:scale-95 disabled:opacity-50" disabled={processState !== 'idle'}>
+                      <ChevronLeft size={16} />
                     </button>
-                    <button type="submit" disabled={processState !== 'idle'} className={`text-white font-black px-3 py-1 rounded-md shadow-md transition-all active:scale-95 flex items-center gap-1.5 text-[9px] uppercase tracking-wider border ${processState === 'success' ? 'bg-emerald-500 hover:bg-emerald-600 border-emerald-600' : 'bg-green-600 hover:bg-green-700 border-green-700'}`}>
-                      {processState === 'idle' && <><MessageCircle size={10} /> Enviar por WhatsApp</>}
-                      {processState === 'processing' && <><RefreshCw size={10} className="animate-spin" /> Procesando...</>}
-                      {processState === 'success' && <><CheckCircle2 size={10} /> ¡Listo!</>}
+                    <button type="submit" disabled={processState !== 'idle'} className={`text-white font-black px-4 py-2 rounded-lg shadow-lg transition-all active:scale-95 flex items-center gap-1.5 text-xs uppercase tracking-wider border relative overflow-hidden group ${processState === 'success' ? 'bg-emerald-500 hover:bg-emerald-600 border-emerald-600' : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 border-green-700'}`}>
+                      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+                      <span className="relative z-10 flex items-center gap-1.5">
+                        {processState === 'idle' && <><MessageCircle size={14} /> Enviar por WhatsApp</>}
+                        {processState === 'processing' && <><RefreshCw size={14} className="animate-spin" /> Procesando...</>}
+                        {processState === 'success' && <><CheckCircle2 size={14} /> ¡Listo!</>}
+                      </span>
                     </button>
                   </div>
                 </div>

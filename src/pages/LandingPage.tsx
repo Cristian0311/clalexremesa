@@ -76,13 +76,13 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative bg-slate-900 pt-10 pb-12 lg:pt-16 lg:pb-16 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-900/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-amber-900/30"></div>
           
           {/* Animated Orbs */}
           <motion.div 
             animate={{ y: [0, -30, 0], x: [0, 10, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[10%] right-[10%] w-[30rem] h-[30rem] bg-blue-600/10 rounded-full blur-[100px] hidden md:block"
+            className="absolute top-[10%] right-[10%] w-[30rem] h-[30rem] bg-amber-500/10 rounded-full blur-[100px] hidden md:block"
           />
           <motion.div 
             animate={{ y: [0, 40, 0], x: [0, -20, 0] }}
@@ -102,7 +102,7 @@ export default function LandingPage() {
               {config?.heroText?.title.split(' ').map((word, i, arr) => (
                 <span key={i}>
                   {i >= arr.length - 2 ? (
-                    <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 pb-1">{word}</span>
+                    <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200 pb-1">{word}</span>
                   ) : (
                     word
                   )}
@@ -115,7 +115,7 @@ export default function LandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <a href="#calculator" className="bg-blue-600 hover:bg-blue-500 text-white transition-colors flex items-center justify-center gap-2 font-bold px-6 py-3 rounded-xl shadow-lg shadow-blue-500/20">
+              <a href="#calculator" className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white transition-all flex items-center justify-center gap-2 font-bold px-6 py-3 rounded-xl shadow-lg shadow-amber-500/20">
                 Calcular Envío <ArrowRight size={20} />
               </a>
               <a href="#how-it-works" className="text-slate-300 hover:text-white transition-colors flex items-center justify-center gap-2 font-medium px-6 py-3 border border-slate-700 rounded-xl hover:bg-slate-800">
@@ -182,7 +182,7 @@ export default function LandingPage() {
 
       {/* Tu Remesa en Simples Pasos (Timeline 3D) */}
       <section className="py-24 bg-slate-50 relative overflow-hidden" id="how-it-works">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none hidden md:block"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-amber-500/10 rounded-full blur-[100px] pointer-events-none hidden md:block"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div 
             className="text-center max-w-3xl mx-auto mb-20"
@@ -229,19 +229,20 @@ export default function LandingPage() {
               <motion.div 
                 key={idx} 
                 variants={fadeIn} 
-                className="bg-white p-5 rounded-2xl border border-slate-100 shadow-lg shadow-slate-200/30 hover:-translate-y-1 transition-all duration-300 group flex items-center gap-5"
+                className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 group flex items-start gap-5 relative overflow-hidden"
               >
-                <div className="flex-shrink-0 relative">
-                  <div className="absolute -top-2 -left-2 w-7 h-7 bg-amber-500 text-slate-900 rounded-full flex items-center justify-center text-[10px] font-black z-10 border-2 border-white shadow-sm">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all duration-500"></div>
+                <div className="flex-shrink-0 relative z-10 mt-1">
+                  <div className="absolute -top-3 -left-3 w-8 h-8 bg-amber-500 text-slate-900 rounded-full flex items-center justify-center text-xs font-black z-20 border-4 border-white shadow-md">
                     {item.step}
                   </div>
-                  <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-amber-50/50 rounded-2xl flex items-center justify-center shadow-inner border border-amber-100/50 group-hover:bg-amber-100 group-hover:scale-110 transition-all duration-300">
                     {item.icon}
                   </div>
                 </div>
-                <div>
-                  <h4 className="text-lg font-bold text-slate-900 mb-1 leading-tight">{item.title}</h4>
-                  <p className="text-slate-500 text-sm leading-snug">{item.desc}</p>
+                <div className="relative z-10">
+                  <h4 className="text-xl font-black text-slate-900 mb-2 leading-tight">{item.title}</h4>
+                  <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -336,11 +337,29 @@ export default function LandingPage() {
               <motion.div 
                 key={idx} 
                 variants={fadeIn} 
-                className="bg-white rounded-2xl p-6 border border-slate-100 shadow-lg shadow-slate-200/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex items-center gap-6 group"
+                className="bg-white/90 backdrop-blur-sm rounded-[2rem] p-6 border border-slate-100 shadow-xl shadow-slate-200/40 hover:-translate-y-2 hover:shadow-2xl hover:shadow-amber-500/10 hover:border-amber-200/50 transition-all duration-300 flex items-center gap-6 group"
               >
                 <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center justify-center group-hover:scale-110 transition-transform duration-300 text-amber-600">
-                    <CheckCircle2 size={26} />
+                  <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-100/50 shadow-inner flex items-center justify-center group-hover:scale-110 group-hover:bg-amber-100 transition-all duration-300 text-amber-600">
+                    {(() => {
+                      const t = item.title.toLowerCase();
+                      if (t.includes('segur') || t.includes('confian')) return <ShieldCheck size={26} strokeWidth={2.5} />;
+                      if (t.includes('atención') || t.includes('personal')) return <HeartHandshake size={26} strokeWidth={2.5} />;
+                      if (t.includes('tasa') || t.includes('transparen')) return <TrendingUp size={26} strokeWidth={2.5} />;
+                      if (t.includes('sencil') || t.includes('rápid')) return <Zap size={26} strokeWidth={2.5} />;
+                      if (t.includes('soport') || t.includes('cercan')) return <Headphones size={26} strokeWidth={2.5} />;
+                      if (t.includes('opcion') || t.includes('múltiple')) return <Globe size={26} strokeWidth={2.5} />;
+                      
+                      const icons = [
+                        <ShieldCheck size={26} strokeWidth={2.5} />,
+                        <HeartHandshake size={26} strokeWidth={2.5} />,
+                        <TrendingUp size={26} strokeWidth={2.5} />,
+                        <Zap size={26} strokeWidth={2.5} />,
+                        <Headphones size={26} strokeWidth={2.5} />,
+                        <Wallet size={26} strokeWidth={2.5} />
+                      ];
+                      return icons[idx % icons.length];
+                    })()}
                   </div>
                 </div>
                 <div>
@@ -374,17 +393,17 @@ export default function LandingPage() {
             viewport={{ once: true }}
           >
             {/* Transferencia CUP */}
-            <motion.div variants={fadeIn} className={`flex-1 bg-slate-900 p-5 rounded-2xl border ${config?.deliveryMethods.transferCUP ? 'border-slate-800 hover:border-amber-500/30' : 'border-slate-800/50 opacity-75'} transition-all duration-300 group flex items-center gap-4 relative overflow-hidden`}>
-              <div className={`absolute top-0 right-0 w-16 h-16 ${config?.deliveryMethods.transferCUP ? 'bg-amber-500/5' : 'bg-slate-500/5'} rounded-full blur-xl`}></div>
-              <div className={`w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center shadow-inner border border-slate-700 ${config?.deliveryMethods.transferCUP ? 'group-hover:scale-110 text-amber-500' : 'text-slate-500'} transition-transform duration-300 flex-shrink-0`}>
+            <motion.div variants={fadeIn} className={`flex-1 bg-slate-900/80 backdrop-blur-sm p-5 rounded-2xl border ${config?.deliveryMethods.transferCUP ? 'border-slate-800 hover:border-amber-500/40 hover:bg-slate-800/80 hover:shadow-lg hover:shadow-amber-500/5' : 'border-slate-800/50 opacity-75'} transition-all duration-300 group flex items-center gap-4 relative overflow-hidden`}>
+              <div className={`absolute top-0 right-0 w-16 h-16 ${config?.deliveryMethods.transferCUP ? 'bg-amber-500/10' : 'bg-slate-500/5'} rounded-full blur-xl transition-all duration-300 group-hover:bg-amber-500/20`}></div>
+              <div className={`w-12 h-12 bg-slate-800/80 rounded-xl flex items-center justify-center shadow-inner border border-slate-700 ${config?.deliveryMethods.transferCUP ? 'group-hover:scale-110 text-amber-500 group-hover:bg-slate-800 group-hover:border-amber-500/30' : 'text-slate-500'} transition-all duration-300 flex-shrink-0`}>
                 <Wallet size={24} />
               </div>
-              <div className="text-left flex-1">
+              <div className="text-left flex-1 relative z-10">
                 <div className="flex justify-between items-start mb-1">
                   <h4 className={`text-base font-bold ${config?.deliveryMethods.transferCUP ? 'text-white' : 'text-slate-400'}`}>Transferencia CUP</h4>
                 </div>
                 <p className="text-slate-500 text-xs leading-relaxed mb-2">Directo a tarjeta bancaria en moneda nacional.</p>
-                <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-md border uppercase tracking-wider ${config?.deliveryMethods.transferCUP ? 'text-amber-500 bg-amber-500/10 border-amber-500/20' : 'text-slate-400 bg-slate-800 border-slate-700'}`}>
+                <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-md border uppercase tracking-wider ${config?.deliveryMethods.transferCUP ? 'text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]' : 'text-slate-400 bg-slate-800 border-slate-700'}`}>
                   <span className={`w-1 h-1 rounded-full ${config?.deliveryMethods.transferCUP ? 'bg-amber-500 animate-pulse' : 'bg-slate-500'}`}></span>
                   {config?.deliveryMethods.transferCUP ? 'Disponible' : 'No disponible'}
                 </div>
@@ -392,17 +411,17 @@ export default function LandingPage() {
             </motion.div>
 
             {/* Efectivo CUP */}
-            <motion.div variants={fadeIn} className={`flex-1 bg-slate-900 p-5 rounded-2xl border ${config?.deliveryMethods.cashCUP ? 'border-slate-800 hover:border-amber-500/30' : 'border-slate-800/50 opacity-75'} transition-all duration-300 group flex items-center gap-4 relative overflow-hidden`}>
-              <div className={`absolute top-0 right-0 w-16 h-16 ${config?.deliveryMethods.cashCUP ? 'bg-amber-500/5' : 'bg-slate-500/5'} rounded-full blur-xl`}></div>
-              <div className={`w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center shadow-inner border border-slate-700 ${config?.deliveryMethods.cashCUP ? 'group-hover:scale-110 text-amber-500' : 'text-slate-500'} transition-transform duration-300 flex-shrink-0`}>
+            <motion.div variants={fadeIn} className={`flex-1 bg-slate-900/80 backdrop-blur-sm p-5 rounded-2xl border ${config?.deliveryMethods.cashCUP ? 'border-slate-800 hover:border-amber-500/40 hover:bg-slate-800/80 hover:shadow-lg hover:shadow-amber-500/5' : 'border-slate-800/50 opacity-75'} transition-all duration-300 group flex items-center gap-4 relative overflow-hidden`}>
+              <div className={`absolute top-0 right-0 w-16 h-16 ${config?.deliveryMethods.cashCUP ? 'bg-amber-500/10' : 'bg-slate-500/5'} rounded-full blur-xl transition-all duration-300 group-hover:bg-amber-500/20`}></div>
+              <div className={`w-12 h-12 bg-slate-800/80 rounded-xl flex items-center justify-center shadow-inner border border-slate-700 ${config?.deliveryMethods.cashCUP ? 'group-hover:scale-110 text-amber-500 group-hover:bg-slate-800 group-hover:border-amber-500/30' : 'text-slate-500'} transition-all duration-300 flex-shrink-0`}>
                 <Banknote size={24} />
               </div>
-              <div className="text-left flex-1">
+              <div className="text-left flex-1 relative z-10">
                 <div className="flex justify-between items-start mb-1">
                   <h4 className={`text-base font-bold ${config?.deliveryMethods.cashCUP ? 'text-white' : 'text-slate-400'}`}>Efectivo CUP</h4>
                 </div>
                 <p className="text-slate-500 text-xs leading-relaxed mb-2">Entrega en efectivo en moneda nacional.</p>
-                <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-md border uppercase tracking-wider ${config?.deliveryMethods.cashCUP ? 'text-amber-500 bg-amber-500/10 border-amber-500/20' : 'text-slate-400 bg-slate-800 border-slate-700'}`}>
+                <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-md border uppercase tracking-wider ${config?.deliveryMethods.cashCUP ? 'text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]' : 'text-slate-400 bg-slate-800 border-slate-700'}`}>
                   <span className={`w-1 h-1 rounded-full ${config?.deliveryMethods.cashCUP ? 'bg-amber-500 animate-pulse' : 'bg-slate-500'}`}></span>
                   {config?.deliveryMethods.cashCUP ? 'Disponible' : 'No disponible'}
                 </div>
@@ -410,17 +429,17 @@ export default function LandingPage() {
             </motion.div>
 
             {/* Efectivo USD */}
-            <motion.div variants={fadeIn} className={`flex-1 bg-slate-900 p-5 rounded-2xl border ${config?.deliveryMethods.cashUSD ? 'border-slate-800 hover:border-amber-500/30' : 'border-slate-800/50 opacity-75'} transition-all duration-300 group flex items-center gap-4 relative overflow-hidden`}>
-              <div className={`absolute top-0 right-0 w-16 h-16 ${config?.deliveryMethods.cashUSD ? 'bg-amber-500/5' : 'bg-slate-500/5'} rounded-full blur-xl`}></div>
-              <div className={`w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center shadow-inner border border-slate-700 ${config?.deliveryMethods.cashUSD ? 'group-hover:scale-110 text-amber-500' : 'text-slate-500'} transition-transform duration-300 flex-shrink-0`}>
+            <motion.div variants={fadeIn} className={`flex-1 bg-slate-900/80 backdrop-blur-sm p-5 rounded-2xl border ${config?.deliveryMethods.cashUSD ? 'border-slate-800 hover:border-amber-500/40 hover:bg-slate-800/80 hover:shadow-lg hover:shadow-amber-500/5' : 'border-slate-800/50 opacity-75'} transition-all duration-300 group flex items-center gap-4 relative overflow-hidden`}>
+              <div className={`absolute top-0 right-0 w-16 h-16 ${config?.deliveryMethods.cashUSD ? 'bg-amber-500/10' : 'bg-slate-500/5'} rounded-full blur-xl transition-all duration-300 group-hover:bg-amber-500/20`}></div>
+              <div className={`w-12 h-12 bg-slate-800/80 rounded-xl flex items-center justify-center shadow-inner border border-slate-700 ${config?.deliveryMethods.cashUSD ? 'group-hover:scale-110 text-amber-500 group-hover:bg-slate-800 group-hover:border-amber-500/30' : 'text-slate-500'} transition-all duration-300 flex-shrink-0`}>
                 <DollarSign size={24} />
               </div>
-              <div className="text-left flex-1">
+              <div className="text-left flex-1 relative z-10">
                 <div className="flex justify-between items-start mb-1">
                   <h4 className={`text-base font-bold ${config?.deliveryMethods.cashUSD ? 'text-white' : 'text-slate-400'}`}>Efectivo USD</h4>
                 </div>
                 <p className="text-slate-500 text-xs leading-relaxed mb-2">Entrega segura de efectivo en dólares.</p>
-                <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-md border uppercase tracking-wider ${config?.deliveryMethods.cashUSD ? 'text-amber-500 bg-amber-500/10 border-amber-500/20' : 'text-slate-400 bg-slate-800 border-slate-700'}`}>
+                <div className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-md border uppercase tracking-wider ${config?.deliveryMethods.cashUSD ? 'text-amber-500 bg-amber-500/10 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]' : 'text-slate-400 bg-slate-800 border-slate-700'}`}>
                   <span className={`w-1 h-1 rounded-full ${config?.deliveryMethods.cashUSD ? 'bg-amber-500 animate-pulse' : 'bg-slate-500'}`}></span>
                   {config?.deliveryMethods.cashUSD ? 'Disponible' : 'No disponible'}
                 </div>
@@ -503,17 +522,19 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-slate-800/40 border border-slate-700/50 rounded-xl overflow-hidden hover:border-amber-500/30 transition-colors"
+                  className={`bg-slate-800/40 backdrop-blur-sm border ${openFaq === idx ? 'border-amber-500/50 shadow-lg shadow-amber-500/5' : 'border-slate-700/50'} rounded-xl overflow-hidden hover:border-amber-500/30 hover:bg-slate-800/60 transition-all duration-300`}
                 >
                   <button 
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    className="w-full px-5 py-4 text-left flex justify-between items-center focus:outline-none"
+                    className="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none"
                   >
-                    <span className="font-semibold text-sm">{faq.q}</span>
-                    <ChevronDown className={`transform transition-transform duration-300 text-amber-500 flex-shrink-0 ml-4 ${openFaq === idx ? 'rotate-180' : ''}`} size={16} />
+                    <span className={`font-semibold text-sm transition-colors duration-300 ${openFaq === idx ? 'text-amber-400' : 'text-slate-100'}`}>{faq.q}</span>
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-300 flex-shrink-0 ml-4 ${openFaq === idx ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-700/50 text-slate-400'}`}>
+                      <ChevronDown className={`transform transition-transform duration-300 ${openFaq === idx ? 'rotate-180' : ''}`} size={16} />
+                    </div>
                   </button>
                   <div 
-                    className={`px-5 transition-all duration-300 ease-in-out ${openFaq === idx ? 'py-4 border-t border-slate-700/50 opacity-100 max-h-40' : 'max-h-0 opacity-0 overflow-hidden py-0'}`}
+                    className={`px-6 transition-all duration-300 ease-in-out ${openFaq === idx ? 'py-5 border-t border-slate-700/50 opacity-100 max-h-40' : 'max-h-0 opacity-0 overflow-hidden py-0'}`}
                   >
                     <p className="text-slate-300 text-sm leading-relaxed">{faq.a}</p>
                   </div>

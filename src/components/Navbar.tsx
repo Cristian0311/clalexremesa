@@ -83,8 +83,9 @@ export default function Navbar() {
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-8">
               {navLinks.map((link) => (
-                <a key={link.name} href={link.href} className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                <a key={link.name} href={link.href} className="text-sm font-medium text-slate-300 hover:text-amber-400 transition-colors relative group">
                   {link.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                 </a>
               ))}
             </div>
@@ -92,14 +93,14 @@ export default function Navbar() {
             <div className="hidden md:flex items-center space-x-4">
               <button 
                 onClick={handleWhatsApp}
-                className="flex items-center gap-1.5 text-slate-300 hover:text-white transition-colors text-sm font-medium"
+                className="flex items-center gap-1.5 text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium"
               >
                 <MessageCircle size={16} />
                 <span>Soporte</span>
               </button>
               <a 
                 href="/#calculator"
-                className="flex items-center gap-1.5 bg-white text-slate-950 hover:bg-slate-100 px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-400 hover:to-amber-500 px-5 py-2 rounded-lg font-bold transition-all text-sm shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 hover:-translate-y-0.5"
               >
                 Calculadora
               </a>
@@ -120,24 +121,29 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden bg-slate-950 border-t border-white/10 px-4 py-4 space-y-2 shadow-xl">
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-slate-950/95 backdrop-blur-xl border-t border-white/10 px-4 py-4 space-y-2 shadow-2xl"
+          >
             {navLinks.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href} 
-                className="block text-slate-300 hover:text-white transition-colors text-sm font-medium py-3 border-b border-white/5"
+                className="block text-slate-300 hover:text-amber-400 hover:bg-white/5 transition-all rounded-lg text-sm font-medium py-3 px-4 border border-transparent hover:border-white/5"
                 onClick={() => setIsOpen(false)}
               >
                 {link.name}
               </a>
             ))}
-            <div className="pt-4 flex flex-col gap-3">
+            <div className="pt-4 flex flex-col gap-3 px-2">
               <button 
                 onClick={() => {
                   handleWhatsApp();
                   setIsOpen(false);
                 }}
-                className="flex items-center justify-center gap-2 w-full text-slate-300 bg-white/5 hover:bg-white/10 px-4 py-3 rounded-lg font-medium transition-colors text-sm"
+                className="flex items-center justify-center gap-2 w-full text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-4 py-3 rounded-xl font-bold transition-all text-sm border border-amber-500/20"
               >
                 <MessageCircle size={18} />
                 Soporte por WhatsApp
@@ -145,12 +151,12 @@ export default function Navbar() {
               <a 
                 href="/#calculator"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 w-full text-slate-950 bg-white hover:bg-slate-100 px-4 py-3 rounded-lg font-medium transition-colors text-sm"
+                className="flex items-center justify-center gap-2 w-full text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 px-4 py-3 rounded-xl font-bold transition-all text-sm shadow-lg shadow-amber-500/20"
               >
                 Calculadora
               </a>
             </div>
-          </div>
+          </motion.div>
         )}
       </nav>
     </>

@@ -9,19 +9,31 @@ export function useConfig() {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchConfig = () => {
-      fetch('/api/config')
-        .then(res => res.json())
-        .then(data => {
-          if (isMounted) {
-            setConfig(data);
-            setIsLoading(false);
-          }
-        })
-        .catch(err => {
-          console.error('Error fetching config:', err);
+    const fetchConfig = async (retryCount = 0) => {
+      try {
+        const res = await fetch('/api/config');
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await res.text();
+          throw new Error(`Expected JSON but got HTML. Response text snippet: ${text.substring(0, 100)}`);
+        }
+        const data = await res.json();
+        if (isMounted) {
+          setConfig(data);
+          setIsLoading(false);
+        }
+      } catch (err: any) {
+        if (retryCount < 3) {
+          console.warn(`Intento ${retryCount + 1} fallido, reintentando en 2s...`, err.message);
+          setTimeout(() => {
+            if (isMounted) fetchConfig(retryCount + 1);
+          }, 2000);
+        } else {
+          console.warn('Advertencia: No se pudo obtener la configuración (puede ser un problema de red temporal):', err.message || err);
           if (isMounted) setIsLoading(false);
-        });
+        }
+      }
     };
 
     fetchConfig();
@@ -58,7 +70,15 @@ export function useConfig() {
         )
         .subscribe((status, err) => {
           console.log('[Supabase Debug] Estado de suscripción al canal:', status);
-          if (err) console.error('[Supabase Debug] Error en la suscripción:', err);
+          if (err) {
+            // Un error 1006 es un cierre de websocket normal cuando la pestaña se inactiva, no lo mostramos como error crítico
+            const isNormalClose = err.message?.includes('1006') || String(err).includes('1006') || String(err).includes('socket closed');
+            if (isNormalClose) {
+              console.warn('[Supabase Debug] Conexión en tiempo real cerrada (normal por inactividad).');
+            } else {
+              console.warn('[Supabase Debug] Error en la suscripción (posible red):', err);
+            }
+          }
         });
     }
     

@@ -1,5 +1,7 @@
 import express from 'express';
 import path from 'path';
+import http from 'http';
+import https from 'https';
 import fs from 'fs/promises';
 import { createServer as createViteServer } from 'vite';
 import { createClient } from '@supabase/supabase-js';
@@ -19,6 +21,17 @@ const supabaseUrl = supabaseUrlRaw.startsWith('http')
 const supabaseKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '').trim(); // Using service_role key if available to bypass RLS
 
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
+let externalUrl = '';
+
+app.use((req, res, next) => {
+  if (!externalUrl && req.headers.host && !req.headers.host.includes('localhost')) {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    externalUrl = `${protocol}://${req.headers.host}`;
+    console.log(`[Keep-Alive] URL externa capturada: ${externalUrl}`);
+  }
+  next();
+});
 
 // Default config
 const DEFAULT_CONFIG = {
@@ -53,7 +66,7 @@ const DEFAULT_CONFIG = {
     {
       id: '2',
       q: '¿Qué datos necesito de la persona en Cuba?',
-      a: 'Para transferencias bancarias, necesitará el nombre completo del titular, número de carnet de identidad y el número de la tarjeta (MLC o CUP).'
+      a: 'Para transferencias bancarias, necesitará el nombre completo del titular, número de carnet de identidad y el número de la tarjeta (CUP).'
     },
     {
       id: '3',
@@ -245,6 +258,20 @@ async function startServer() {
 
   app.listen(Number(PORT), '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    
+    // Auto-ping para mantener el servidor activo en Render
+    // Render free instances sleep after 15 minutes. We ping every 14 minutes.
+    setInterval(() => {
+      const url = externalUrl ? `${externalUrl}/api/ping` : `http://localhost:${PORT}/api/ping`;
+      console.log(`[Keep-Alive] Haciendo ping a ${url}...`);
+      
+      const req = url.startsWith('https') ? https : http;
+      req.get(url, (res) => {
+        console.log(`[Keep-Alive] Estado: ${res.statusCode}`);
+      }).on('error', (err) => {
+        console.error(`[Keep-Alive] Error: ${err.message}`);
+      });
+    }, 14 * 60 * 1000); // 14 minutos
   });
 }
 
